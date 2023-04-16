@@ -1,19 +1,15 @@
 package ru.yandex.samokat;
 
-import ru.yandex.samokat.CourierData;
-import ru.yandex.samokat.CourierLoginData;
-import ru.yandex.samokat.CourierService;
 import com.github.javafaker.Faker;
-import io.qameta.allure.Issue;
 import io.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertNotNull;
 
-public class LogInCourierTest {
+public class CourierLogInTests {
+
     CourierService courierService = new CourierService();
 
     public String genString() {
@@ -23,55 +19,61 @@ public class LogInCourierTest {
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru/";}
+        RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru/";
+    }
+
     @Test
-    public  void successLogIn(){
+    public  void courierLogIn(){
         CourierData courierData = new CourierData();
         courierService.createCourier(courierData);
-        courierService.courierLogIn(courierData)
+        courierService
+                .courierLogIn(courierData)
                 .then()
-                .assertThat()
                 .statusCode(200)
+                .and()
+                .assertThat()
                 .body("id", notNullValue());
         courierService.deleteCourier(courierData);
     }
+
     @Test
-    @Issue("Ошибка 504 при попытке входа без логина")
-    public  void failedLogInWithoutData(){
+    public  void courierLogInWithoutData(){
         CourierData courierData = new CourierData();
         courierService.createCourier(courierData);
-        courierService.courierLogIn(new CourierLoginData(null,null))
+        courierService
+                .courierLogIn(new CourierLoginData(null,null))
                 .then()
                 .assertThat()
                 .statusCode(400)
                 .body("message", equalTo("Недостаточно данных для входа"));
-        courierService.deleteCourier(courierData);
     }
+
     @Test
-    @Issue("Ошибка 504 при попытке входа без логина")
-    public  void failedLogInWithoutLogin(){
+    public  void courierLogInWithoutLogin(){
         CourierData courierData = new CourierData();
         courierService.createCourier(courierData);
-        courierService.courierLogIn(new CourierLoginData(null,courierData.getPassword()))
+        courierService
+                .courierLogIn(new CourierLoginData(null, courierData.getPassword()))
                 .then()
                 .assertThat()
                 .statusCode(400)
                 .body("message", equalTo("Недостаточно данных для входа"));
-        courierService.deleteCourier(courierData);
     }
+
     @Test
-    public  void failedLogInWithoutPassword(){
+    public  void courierLogInWithoutPassword(){
         CourierData courierData = new CourierData();
         courierService.createCourier(courierData);
-        courierService.courierLogIn(new CourierLoginData(courierData.getLogin(),null))
+        courierService
+                .courierLogIn(new CourierLoginData(courierData.getLogin(),null))
                 .then()
                 .assertThat()
                 .statusCode(400)
                 .body("message", equalTo("Недостаточно данных для входа"));
-        courierService.deleteCourier(courierData);
     }
+
     @Test
-    public  void failedLogInWithWrongLogin(){
+    public  void courierLogInWithWrongLogin(){
         CourierData courierData = new CourierData();
         courierService.createCourier(courierData);
         courierService.courierLogIn(new CourierLoginData(genString(),courierData.getPassword()))
@@ -79,17 +81,17 @@ public class LogInCourierTest {
                 .assertThat()
                 .statusCode(404)
                 .body("message", equalTo("Учетная запись не найдена"));
-        courierService.deleteCourier(courierData);
     }
+
     @Test
-    public  void failedLogInWithWrongPassword(){
+    public  void courierLogInWithWrongPassword(){
         CourierData courierData = new CourierData();
         courierService.createCourier(courierData);
-        courierService.courierLogIn(new CourierLoginData(courierData.getLogin(),genString()))
+        courierService
+                .courierLogIn(new CourierLoginData(courierData.getLogin(),genString()))
                 .then()
                 .assertThat()
                 .statusCode(404)
                 .body("message", equalTo("Учетная запись не найдена"));
-        courierService.deleteCourier(courierData);
     }
 }

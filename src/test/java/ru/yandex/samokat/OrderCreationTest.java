@@ -1,6 +1,5 @@
 package ru.yandex.samokat;
 
-import ru.yandex.samokat.OrderCreateData;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.Before;
@@ -11,22 +10,18 @@ import org.junit.runners.Parameterized;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.is;
 
 @RunWith(Parameterized.class)
-public class AddOrderTest {
+public class OrderCreationTest {
+
     private List<String> color;
-    public AddOrderTest(List<String> color){
+
+    public OrderCreationTest(List<String> color){
         this.color = color;
     }
-    public Response deleteOrder(int track){
-        return given()
-                .header("Content-type", "application/json")
-                .and()
-                .body(track)
-                .when()
-                .put("/api/v1/orders/cancel");
-    }
+
     @Parameterized.Parameters
     public static Object[][] getDataForOrder() {
         return new Object[][] {
@@ -36,22 +31,26 @@ public class AddOrderTest {
                 {List.of()}
         };
     }
+
     @Before
     public void setUp() {
-        RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru/";}
+        RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru/";
+    }
+
     @Test
     public void createOrder(){
         OrderCreateData orderCreateData = new OrderCreateData();
         orderCreateData.setColor(color);
-        int track = given()
+        Response response =
+                given()
                 .header("Content-type", "application/json")
                 .body(orderCreateData)
-                .post("/api/v1/orders")
-                .then()
+                .when()
+                .post("/api/v1/orders");
+                response.then()
                 .assertThat()
                 .statusCode(201)
-                .extract().path("track");
-        assertNotNull(track);
-        deleteOrder(track);
+                .and()
+                .assertThat().body("track", is(notNullValue()));
     }
 }
