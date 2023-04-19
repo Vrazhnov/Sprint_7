@@ -1,4 +1,4 @@
-package ru.yandex.samokat;
+package ru.yandex.samokat.order;
 
 public class CheckOrderData {
 
@@ -14,7 +14,7 @@ public class CheckOrderData {
         this.page = page;
     }
 
-    public CheckOrderData(){
+    public CheckOrderData() {
     }
 
     public Integer getCourierId() {

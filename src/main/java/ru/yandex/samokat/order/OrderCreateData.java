@@ -1,4 +1,4 @@
-package ru.yandex.samokat;
+package ru.yandex.samokat.order;
 
 import java.util.List;
 
@@ -24,7 +24,8 @@ public class OrderCreateData {
         this.comment = comment;
         this.color = color;
     }
-    public OrderCreateData(){
+
+    public OrderCreateData() {
         firstName = "Naruto";
         lastName = "Uchiha";
         address = "Konoha, 142 apt.";

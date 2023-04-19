@@ -1,4 +1,4 @@
-package ru.yandex.samokat;
+package ru.yandex.samokat.courier;
 
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
@@ -6,49 +6,49 @@ import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 
 public class CourierService {
+    private static final String PATH = "api/v1/courier";
+    private static final String LOGIN_PATH = "api/v1/courier/login";
 
     @Step("Get response from POST request to /api/v1/courier/login")
-    public Integer getCourierId(CourierData courierData){
+    public Integer getCourierId(CourierData courierData) {
         return given()
                 .header("Content-type", "application/json")
                 .body(courierData)
-                .post("/api/v1/courier/login")
+                .post(LOGIN_PATH)
                 .then()
                 .extract().path("id");
     }
 
     @Step("Send POST request to /api/v1/courier/login")
-    public Response courierLogIn(CourierData courierData){
-        return  given()
+    public Response courierLogIn(CourierData courierData) {
+        return given()
                 .header("Content-type", "application/json")
                 .body(courierData)
-                .post("/api/v1/courier/login");
+                .post(LOGIN_PATH);
     }
 
-    public Response courierLogIn(CourierLoginData courierLoginData){
-        return  given()
+    public Response courierLogIn(CourierLoginData courierLoginData) {
+        return given()
                 .header("Content-type", "application/json")
                 .body(courierLoginData)
-                .post("/api/v1/courier/login");
+                .post(LOGIN_PATH);
     }
 
     @Step("Send Delete request to /api/v1/courier")
-    public void deleteCourier(CourierData courierData){
-        given()
-                .header("Content-type", "application/json")
-                .and()
-                .body(getCourierId(courierData))
+    public Response deleteCourier(CourierData courierData) {
+        return given()
                 .when()
-                .delete("/api/v1/courier");
+                .header("Content-type", "application/json")
+                .delete(PATH + "/" + getCourierId(courierData));
     }
 
     @Step("Send POST request to /api/v1/courier")
-    public Response createCourier(CourierData courierData){
+    public Response createCourier(CourierData courierData) {
         return given()
                 .header("Content-type", "application/json")
                 .and()
                 .body(courierData)
                 .when()
-                .post("/api/v1/courier");
+                .post(PATH);
     }
 }

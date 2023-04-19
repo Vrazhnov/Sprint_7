@@ -1,14 +1,14 @@
-package ru.yandex.samokat;
+package ru.yandex.samokat.courier;
 
 import com.github.javafaker.Faker;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 
-public class CourierCreationTests {
+public class CourierCreationNegativeTests {
     CourierService courierService = new CourierService();
 
     public String genString() {
@@ -22,20 +22,8 @@ public class CourierCreationTests {
     }
 
     @Test
-    public  void createNewCourier(){
-        CourierData courierData = new CourierData(genString(), genString(), genString());
-        courierService
-                .createCourier(courierData)
-                .then()
-                .statusCode(201)
-                .and()
-                .assertThat()
-                .body("ok", is(true));
-        courierService.deleteCourier(courierData);
-    }
-
-    @Test
-    public  void createNewCourierWithExistingLogin(){  // Падает, т.к. текст ошибки отличается от докуентации: "Этот логин уже используется. Попробуйте другой."
+    @DisplayName("Создание нового пользователя с логином, который уже занят")
+    public void createNewCourierWithExistingLogin() {  // Падает, т.к. текст ошибки отличается от докуентации: "Этот логин уже используется. Попробуйте другой."
         CourierData courierData = new CourierData();
         courierService.createCourier(courierData);
         courierService
@@ -47,7 +35,8 @@ public class CourierCreationTests {
     }
 
     @Test
-    public  void createCourierWithoutPassword(){
+    @DisplayName("Создание нового пользователя без указания пароля")
+    public void createCourierWithoutPassword() {
         CourierData courierData = new CourierData(genString(), null, genString());
         courierService
                 .createCourier(courierData)
@@ -57,8 +46,9 @@ public class CourierCreationTests {
     }
 
     @Test
-    public  void createCourierWithoutLogin(){
-        CourierData courierData = new CourierData(null,genString(), genString());
+    @DisplayName("Создание нового пользователя без указания логина")
+    public void createCourierWithoutLogin() {
+        CourierData courierData = new CourierData(null, genString(), genString());
         courierService
                 .createCourier(courierData)
                 .then().assertThat()
@@ -67,28 +57,8 @@ public class CourierCreationTests {
     }
 
     @Test
-    public  void checkCourierSuccessCreationStatus(){
-        CourierData courierData = new CourierData();
-        courierService
-                .createCourier(courierData)
-                .then()
-                .assertThat()
-                .statusCode(201);
-        courierService.deleteCourier(courierData);
-    }
-
-    @Test
-    public  void checkCourierSuccessCreationValue(){
-        CourierData courierData = new CourierData();
-        courierService
-                .createCourier(courierData)
-                .then().assertThat()
-                .body("ok", equalTo(true));
-        courierService.deleteCourier(courierData);
-    }
-
-    @Test
-    public  void createCourierWithExistingLogin(){ // Падает, т.к. текст ошибки отличается от докуентации: "Этот логин уже используется. Попробуйте другой."
+    @DisplayName("Проверка возврата ошибки при создании пользователя с неуникальным логином")
+    public void createCourierWithExistingLogin() { // Падает, т.к. текст ошибки отличается от докуентации: "Этот логин уже используется. Попробуйте другой."
         CourierData courierData = new CourierData();
         courierService.createCourier(courierData);
         courierService

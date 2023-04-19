@@ -1,14 +1,14 @@
-package ru.yandex.samokat;
+package ru.yandex.samokat.courier;
 
 import com.github.javafaker.Faker;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
 
-public class CourierLogInTests {
+public class CourierLogInNegativeTests {
 
     CourierService courierService = new CourierService();
 
@@ -23,25 +23,12 @@ public class CourierLogInTests {
     }
 
     @Test
-    public  void courierLogIn(){
+    @DisplayName("Проверка авторизации пользователя без указания и логина и пароля")
+    public void courierLogInWithoutData() {
         CourierData courierData = new CourierData();
         courierService.createCourier(courierData);
         courierService
-                .courierLogIn(courierData)
-                .then()
-                .statusCode(200)
-                .and()
-                .assertThat()
-                .body("id", notNullValue());
-        courierService.deleteCourier(courierData);
-    }
-
-    @Test
-    public  void courierLogInWithoutData(){
-        CourierData courierData = new CourierData();
-        courierService.createCourier(courierData);
-        courierService
-                .courierLogIn(new CourierLoginData(null,null))
+                .courierLogIn(new CourierLoginData(null, null))
                 .then()
                 .assertThat()
                 .statusCode(400)
@@ -49,7 +36,8 @@ public class CourierLogInTests {
     }
 
     @Test
-    public  void courierLogInWithoutLogin(){
+    @DisplayName("Проверка авторизации пользователя без указания логина")
+    public void courierLogInWithoutLogin() {
         CourierData courierData = new CourierData();
         courierService.createCourier(courierData);
         courierService
@@ -61,11 +49,12 @@ public class CourierLogInTests {
     }
 
     @Test
-    public  void courierLogInWithoutPassword(){
+    @DisplayName("Проверка авторизации пользователя без указания пароля")
+    public void courierLogInWithoutPassword() {
         CourierData courierData = new CourierData();
         courierService.createCourier(courierData);
         courierService
-                .courierLogIn(new CourierLoginData(courierData.getLogin(),null))
+                .courierLogIn(new CourierLoginData(courierData.getLogin(), null))
                 .then()
                 .assertThat()
                 .statusCode(400)
@@ -73,10 +62,11 @@ public class CourierLogInTests {
     }
 
     @Test
-    public  void courierLogInWithWrongLogin(){
+    @DisplayName("Проверка авторизации пользователя с некорректным логином")
+    public void courierLogInWithWrongLogin() {
         CourierData courierData = new CourierData();
         courierService.createCourier(courierData);
-        courierService.courierLogIn(new CourierLoginData(genString(),courierData.getPassword()))
+        courierService.courierLogIn(new CourierLoginData(genString(), courierData.getPassword()))
                 .then()
                 .assertThat()
                 .statusCode(404)
@@ -84,11 +74,12 @@ public class CourierLogInTests {
     }
 
     @Test
-    public  void courierLogInWithWrongPassword(){
+    @DisplayName("Проверка авторизации пользователя с некорректным паролем")
+    public void courierLogInWithWrongPassword() {
         CourierData courierData = new CourierData();
         courierService.createCourier(courierData);
         courierService
-                .courierLogIn(new CourierLoginData(courierData.getLogin(),genString()))
+                .courierLogIn(new CourierLoginData(courierData.getLogin(), genString()))
                 .then()
                 .assertThat()
                 .statusCode(404)

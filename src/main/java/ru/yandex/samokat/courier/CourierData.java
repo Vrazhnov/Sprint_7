@@ -1,4 +1,4 @@
-package ru.yandex.samokat;
+package ru.yandex.samokat.courier;
 
 import com.github.javafaker.Faker;
 
@@ -6,16 +6,16 @@ import com.github.javafaker.Faker;
 public class CourierData {
 
     private String login;
-    private String  password;
+    private String password;
     private String firstName;
 
-    public CourierData(String login, String  password, String firstName){
+    public CourierData(String login, String password, String firstName) {
         this.login = login;
         this.password = password;
         this.firstName = firstName;
     }
 
-    public CourierData(){
+    public CourierData() {
         Faker faker = new Faker();
         login = faker.name().firstName();
         password = faker.name().firstName();
@@ -26,12 +26,12 @@ public class CourierData {
         return login;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {

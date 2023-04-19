@@ -1,5 +1,6 @@
-package ru.yandex.samokat;
+package ru.yandex.samokat.order;
 
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +16,8 @@ public class OrderListTest {
     }
 
     @Test
-    public void checkOrderList(){
+    @DisplayName("Проверка списка заказов")
+    public void checkOrderList() {
         given()
                 .header("Content-type", "application/json")
                 .when()
